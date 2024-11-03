@@ -18,4 +18,4 @@ UserSchema.options.toJSON.transform = (doc:any, ret:any) => {
     return ret;
 };
 
-const User = 
+const User = models.User || model("User", UserSchema);
