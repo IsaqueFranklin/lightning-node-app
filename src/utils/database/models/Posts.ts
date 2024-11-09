@@ -14,5 +14,5 @@ PostSchema.options.toJSON.transform = (doc:any, ret:any) => {
     return ret;
 };
 
-const User = models.User || model("User", PostSchema);
-export default User;
+const Posts = models.Posts || model("Posts", PostSchema);
+export default Posts;
