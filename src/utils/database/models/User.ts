@@ -1,11 +1,11 @@
 import { Schema, model, models } from "mongoose";
 
-const UserSchema = new Schema({
+const UserSchema:any = new Schema({
     username: {type: String, required: true},
     profilePhotos: {
         type: String,
         default: function () {
-            return `https://secure.gravatar.com/${this._id}?s-98&d-identicon`;
+            return `https://secure.gravatar.com/${UserSchema._id}?s-98&d-identicon`;
         }
     }
 });
@@ -19,3 +19,4 @@ UserSchema.options.toJSON.transform = (doc:any, ret:any) => {
 };
 
 const User = models.User || model("User", UserSchema);
+export default User;
