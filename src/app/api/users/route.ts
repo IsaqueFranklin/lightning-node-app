@@ -16,7 +16,7 @@ export async function handler(req: NextRequest, res: NextResponse){
     }
 }
 
-async function getUsers(req, res:any){
+async function getUsers(req:any, res:any){
     try {
         await connectMongo();
 
@@ -24,6 +24,18 @@ async function getUsers(req, res:any){
 
         res.json({users}, {status: 200});
     } catch (error) {
-        res.json({error: error.message}, {status: 500});
+        res.json({error}, {status: 500});
+    }
+}
+
+async function addUser(req:any , res:any){
+    try {
+        await connectMongo();
+
+        const user = await User.create(req.body);
+
+        res.json({user}, {status:201});
+    } catch(error){
+        res.json({error}, {status:500});
     }
 }
