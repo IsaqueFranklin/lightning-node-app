@@ -3,50 +3,36 @@ import User from "@/utils/database/models/User";
 import { NextRequest, NextResponse } from "next/server";
 import axios from 'axios';
 
-export async function handler(req: NextRequest, res: NextResponse){
-    switch (req.method) {
-        case "GET": {
-            return getUsers(req, res);
-        }
-        case "POST": {
-            return addUser(req, res);
-        }
-        default: {
-            return NextResponse.json({ error: "Method not allowed " }, { status: 405 });
-        }
-    }
-}
-
-async function getUsers(req:any, res:any){
+// GET request handler
+export async function GET(req: NextRequest) {
     try {
         await connectMongo();
 
         const users = await User.find();
 
-        res.json({users}, {status: 200});
+        return NextResponse.json({ users }, { status: 200 });
     } catch (error) {
-        res.json({error}, {status: 500});
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
 
-async function addUser(req:any , res:any){
+// POST request handler
+export async function POST(req: NextRequest) {
     try {
         await connectMongo();
 
-        const name = req.body.username.replace(/\s+/g, "");
-
-        const newUserObject = {
-            username: name,
-        }
+        const body = await req.json();
+        const name = body.username.replace(/\s+/g, "");
 
         const userExists = await User.findOne({ username: name });
-        if (userExists){
-            return res.json({userExists}, {status:200});
+        if (userExists) {
+            return NextResponse.json({ exists: userExists }, { status: 200 });
         }
-        const user = await User.create(newUserObject);
 
-        res.json({user}, {status:201});
-    } catch(error){
-        res.json({error}, {status:500});
+        const newUser = await User.create({ username: name });
+
+        return NextResponse.json({ user: newUser }, { status: 201 });
+    } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
